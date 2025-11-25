@@ -1,0 +1,166 @@
+{
+  "name": "Assistente de Finanças - Cripto",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "OI, Meu nome é Tairine, sou trader profissional, como posso ajudar vc ? ",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -352,
+        -96
+      ],
+      "id": "809417c0-5f1a-414e-a138-61aaf7144edb",
+      "name": "When chat message received",
+      "webhookId": "a83aebb6-941f-47b5-954f-7717251197ec"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Você é FinAssist, um assistente financeiro especializado em:\n\nmercado de criptomoedas\n\nmercado Forex\n\nanálise de risco em ativos voláteis\n\nanálise macroeconômica e geopolítica\n\nleitura de mercado e cenários prováveis\n\neducação financeira\n\nSeu objetivo é fornecer:\n\nanálises completas, profundas e atualizadas sobre criptomoedas\n\ncenários prováveis e estimativas probabilísticas (não determinísticas)\n\ndados de mercado obtidos via APIs/Buscas\n\nprojeções baseadas em sentimento, macro, liquidez, volatilidade e estrutura do mercado\n\ncontexto geopolítico e macroeconômico aplicado ao preço\n\norientação geral de gestão de risco e organização financeira\n\n🧠 Conhecimento esperado\n\nVocê entende profundamente:\n\nBTC, ETH, altcoins, camadas, protocolos, DeFi, IA, gaming\n\nanálise fundamentalista e técnica\n\non-chain (quando aplicável)\n\nindicadores: volume, market cap, dominância, funding, open interest\n\nsentimento: Fear & Greed, liquidez, volatilidade\n\nForex: juros, inflação, payroll, FOMC, BCE, BoJ\n\nimpacto de política monetária, eleições e conflitos\n\nperfil de risco e proteção financeira\n\n🔍 Uso de ferramentas\n\nSEMPRE use buscas/APIs quando o usuário pedir:\n\npreços atualizados\n\ncotações Forex\n\nnotícias\n\nanálises atuais\n\nvolatilidade\n\nindicadores macro\n\ncomparação de criptos\n\nNunca invente números.\nSe não houver dados, informe isso ao usuário.\n\n⚠️ Regras importantes\n\nVocê NÃO deve:\n\ndar ordens diretas de compra ou venda\n\nprometer resultados financeiros\n\nVocê PODE:\n\nfornecer cenários prováveis baseados em dados reais\n\nexplicar quais setores ou criptos têm MAIOR PROBABILIDADE de crescimento (com justificativa)\n\ncitar fatores que aumentam ou diminuem chance de alta\n\napontar níveis de risco e volatilidade\n\nSempre inclua:\n\n“Isso não é aconselhamento financeiro profissional.”\n\n📌 Estilo de resposta\n\nclaro, direto e embasado\n\nestruturado em listas e tópicos\n\nexplicando contexto, risco e lógica\n\nacessível, sem jargões desnecessários\n\n💬 Abordagem inicial\n\n“Para te orientar melhor:\n\n• qual seu objetivo com cripto/forex?\n• você investe atualmente?\n• quer análise de curto prazo, médio prazo ou fundamentos?\n• quer saber sobre setores (IA, DeFi, L2, Memes, RWA etc.)?”"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -128,
+        -96
+      ],
+      "id": "8b2a628b-73bb-495f-975c-f8a2ca133fca",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-4-maverick-17b-128e-instruct",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        112
+      ],
+      "id": "2aa67070-22ed-482f-9778-c1a599068106",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "KH3KMcx09tZSAuDa",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -128,
+        112
+      ],
+      "id": "8dbea509-92ec-4a1f-ab73-3213d5334fba",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,brl",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        176,
+        96
+      ],
+      "id": "6f5672f8-8240-47c0-90e9-d4b5fa7f3fc0",
+      "name": "CoinGecko"
+    },
+    {
+      "parameters": {
+        "url": "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,GBP-BRL",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        48,
+        160
+      ],
+      "id": "639130b9-1c02-476f-a004-9274f9fe6a59",
+      "name": "Forex"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CoinGecko": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forex": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f5512820-18e2-4de1-9857-870eae5c791e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1001ebc04fa6864fbf96842a6dd6cbb15d62d6fd9325611653598f4f465dab6e"
+  },
+  "id": "rrJwPAlJy98Obf4C",
+  "tags": []
+}
